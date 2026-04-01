@@ -10,5 +10,11 @@
     "name": "Head Ball",
     "samplePrompt": "Make head ball game",
     "link": "https://www.tinygamerai.com/games/files/head-ball/index.html"
+  },
+  {
+    "id": "3",
+    "name": "Jumping Bird",
+    "samplePrompt": "Make a popular bird game ",
+    "link": "https://www.tinygamerai.com/games/files/flappy/index.html"
   }
 ]
