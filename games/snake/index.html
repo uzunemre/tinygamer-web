@@ -612,7 +612,7 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 13px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Sen', sx, sy);
+        ctx.fillText('You', sx, sy);
     }
 
     function drawAIName(ai, idx) {
@@ -624,7 +624,7 @@
         ctx.fillStyle = ai.color;
         ctx.font = 'bold 11px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Yılan ' + (idx + 1), sx, sy);
+        ctx.fillText('Snake ' + (idx + 1), sx, sy);
     }
 
     function drawJoystick() {
@@ -650,20 +650,20 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText('Skor: ' + score, 20, 32);
+        ctx.fillText('Score: ' + score, 20, 32);
         ctx.fillStyle = '#ffd700';
-        ctx.fillText('En Yüksek: ' + highScore, 20, 55);
+        ctx.fillText('High Score: ' + highScore, 20, 55);
 
         // Length
         ctx.fillStyle = '#00ff88';
-        ctx.fillText('Uzunluk: ' + player.segments.length, 20, 78);
+        ctx.fillText('Length: ' + player.segments.length, 20, 78);
 
         // Boost hint
         if (usingTouch && !joystick.active) {
             ctx.fillStyle = 'rgba(255,255,255,0.5)';
             ctx.font = '13px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('Sol: Joystick | Sağ: Hızlan', canvas.width / 2, canvas.height - 20);
+            ctx.fillText('Left: Joystick | Right: Boost', canvas.width / 2, canvas.height - 20);
         }
 
         // Wall warning
@@ -674,7 +674,7 @@
                 ctx.fillStyle = 'rgba(255, 68, 68, 0.8)';
                 ctx.font = 'bold 20px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('⚠️ DUVAR YAKIN! ⚠️', canvas.width / 2, canvas.height / 2 - 50);
+                ctx.fillText('⚠️ WALL CLOSE! ⚠️', canvas.width / 2, canvas.height / 2 - 50);
             }
         }
     }
@@ -743,26 +743,26 @@
 
         ctx.font = 'bold 24px Arial';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText('Yılanları Ye, Büyü!', canvas.width / 2, canvas.height / 2 - 30);
+        ctx.fillText('Eat Snakes, Grow!', canvas.width / 2, canvas.height / 2 - 30);
 
         ctx.font = '18px Arial';
         ctx.fillStyle = '#aaaaaa';
-        ctx.fillText('🏆 Diğer yılanlara çarpınca onları yersin!', canvas.width / 2, canvas.height / 2 + 10);
-        ctx.fillText('⚠️ Duvara çarpınca ölürsün!', canvas.width / 2, canvas.height / 2 + 38);
+        ctx.fillText('🏆 Hit other snakes to eat them!', canvas.width / 2, canvas.height / 2 + 10);
+        ctx.fillText('⚠️ Hit the wall and you die!', canvas.width / 2, canvas.height / 2 + 38);
 
         // Tap to start
         const pulse = Math.sin(Date.now() / 400) * 0.3 + 0.85;
         ctx.globalAlpha = pulse;
         ctx.fillStyle = '#00ff88';
         ctx.font = 'bold 26px Arial';
-        ctx.fillText('Başlamak için Dokun!', canvas.width / 2, canvas.height / 2 + 100);
+        ctx.fillText('Tap to Start!', canvas.width / 2, canvas.height / 2 + 100);
         ctx.globalAlpha = 1;
 
         // High score
         if (highScore > 0) {
             ctx.fillStyle = '#ffd700';
             ctx.font = 'bold 20px Arial';
-            ctx.fillText('En Yüksek Skor: ' + highScore, canvas.width / 2, canvas.height / 2 + 145);
+            ctx.fillText('High Score: ' + highScore, canvas.width / 2, canvas.height / 2 + 145);
         }
     }
 
@@ -776,26 +776,26 @@
         ctx.fillStyle = '#ff4444';
         ctx.shadowColor = '#ff4444';
         ctx.shadowBlur = 20;
-        ctx.fillText('💀 ÖLDÜN!', canvas.width / 2, canvas.height / 2 - 80);
+        ctx.fillText('💀 YOU DIED!', canvas.width / 2, canvas.height / 2 - 80);
         ctx.shadowBlur = 0;
 
         ctx.font = 'bold 28px Arial';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText('Skor: ' + score, canvas.width / 2, canvas.height / 2 - 20);
+        ctx.fillText('Score: ' + score, canvas.width / 2, canvas.height / 2 - 20);
 
         ctx.font = 'bold 22px Arial';
         ctx.fillStyle = '#ffd700';
-        ctx.fillText('En Yüksek: ' + highScore, canvas.width / 2, canvas.height / 2 + 20);
+        ctx.fillText('High Score: ' + highScore, canvas.width / 2, canvas.height / 2 + 20);
 
         ctx.font = 'bold 20px Arial';
         ctx.fillStyle = '#aaaaaa';
-        ctx.fillText('Uzunluk: ' + player.segments.length, canvas.width / 2, canvas.height / 2 + 55);
+        ctx.fillText('Length: ' + player.segments.length, canvas.width / 2, canvas.height / 2 + 55);
 
         const pulse = Math.sin(Date.now() / 400) * 0.3 + 0.85;
         ctx.globalAlpha = pulse;
         ctx.fillStyle = '#00ff88';
         ctx.font = 'bold 26px Arial';
-        ctx.fillText('Tekrar Oynamak için Dokun!', canvas.width / 2, canvas.height / 2 + 110);
+        ctx.fillText('Tap to Play Again!', canvas.width / 2, canvas.height / 2 + 110);
         ctx.globalAlpha = 1;
     }
 
