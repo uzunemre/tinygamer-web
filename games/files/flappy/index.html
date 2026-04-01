@@ -300,11 +300,7 @@
         ctx.closePath();
         ctx.fill();
 
-        // "tarık" text on bird
-        ctx.fillStyle = '#8B0000';
-        ctx.font = `bold ${Math.floor(r * 0.55)}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+
 
         ctx.restore();
     }
@@ -344,8 +340,8 @@
         ctx.textBaseline = 'middle';
         ctx.strokeStyle = '#8B6914';
         ctx.lineWidth = 3;
-        ctx.strokeText('Bird', canvas.width / 2, canvas.height * 0.6);
-        ctx.fillText('Bird', canvas.width / 2, canvas.height * 0.6);
+        ctx.strokeText('Jumping Bird', canvas.width / 2, canvas.height * 0.6);
+        ctx.fillText('Jumping Bird', canvas.width / 2, canvas.height * 0.6);
 
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 26px Arial';
