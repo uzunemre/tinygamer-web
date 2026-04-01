@@ -594,13 +594,13 @@
         // Win condition text
         ctx.fillStyle = 'rgba(255,255,255,0.7)';
         ctx.font = '11px Arial';
-        ctx.fillText('İlk 7 kazanır!', W/2, 80);
+        ctx.fillText('First to 7 wins!', W/2, 80);
 
         // Player labels
         ctx.fillStyle = '#3498db';
         ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText('SEN', 15, 30);
+        ctx.fillText('YOU', 15, 30);
 
         ctx.fillStyle = '#e74c3c';
         ctx.textAlign = 'right';
@@ -610,7 +610,7 @@
         ctx.fillStyle = 'rgba(255,215,0,0.9)';
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('🏆 En Yüksek: ' + highScore, W/2, 100);
+        ctx.fillText('🏆 High Score: ' + highScore, W/2, 100);
     }
 
     function roundRect(x, y, w, h, r) {
@@ -660,7 +660,7 @@
         ctx.stroke();
         ctx.fillStyle = '#FFD700';
         ctx.font = 'bold 14px Arial';
-        ctx.fillText('ZIPLAT', jumpBtn.x + jumpBtn.w/2, jumpBtn.y + jumpBtn.h/2 + 6);
+        ctx.fillText('JUMP', jumpBtn.x + jumpBtn.w/2, jumpBtn.y + jumpBtn.h/2 + 6);
     }
 
     function drawMenu() {
@@ -680,29 +680,29 @@
         ctx.fillStyle = '#f39c12';
         ctx.font = 'bold 52px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('⚽ KAFA TOPU', W/2, H/2 - 90);
+        ctx.fillText('⚽ HEAD BALL', W/2, H/2 - 90);
 
         ctx.fillStyle = '#fff';
         ctx.font = '20px Arial';
-        ctx.fillText('İlk 7 sayıya ulaşan kazanır!', W/2, H/2 - 50);
+        ctx.fillText('First to 7 points wins!', W/2, H/2 - 50);
 
         ctx.font = '16px Arial';
         ctx.fillStyle = '#aef';
-        ctx.fillText('← → Hareket   ZIPLAT: Zıpla', W/2, H/2);
-        ctx.fillText('Kafanla topa vur!', W/2, H/2 + 30);
+        ctx.fillText('← → Move   JUMP: Jump', W/2, H/2);
+        ctx.fillText('Hit the ball with your head!', W/2, H/2 + 30);
 
         // High score
         if (highScore > 0) {
             ctx.fillStyle = '#FFD700';
             ctx.font = 'bold 18px Arial';
-            ctx.fillText('🏆 En Yüksek Skor: ' + highScore, W/2, H/2 + 70);
+            ctx.fillText('🏆 High Score: ' + highScore, W/2, H/2 + 70);
         }
 
         // Tap to start
         const pulse = Math.sin(Date.now() * 0.004) * 0.3 + 0.7;
         ctx.fillStyle = 'rgba(243,156,18,' + pulse + ')';
         ctx.font = 'bold 26px Arial';
-        ctx.fillText('Başlamak için dokun!', W/2, H/2 + 120);
+        ctx.fillText('Tap to start!', W/2, H/2 + 120);
     }
 
     function drawGameOver() {
@@ -725,29 +725,29 @@
         if (won) {
             ctx.fillStyle = '#2ecc71';
             ctx.font = 'bold 48px Arial';
-            ctx.fillText('🏆 KAZANDIN!', W/2, H/2 - 110);
+            ctx.fillText('🏆 YOU WIN!', W/2, H/2 - 110);
         } else {
             ctx.fillStyle = '#e74c3c';
             ctx.font = 'bold 48px Arial';
-            ctx.fillText('😢 KAYBETTİN!', W/2, H/2 - 110);
+            ctx.fillText('😢 YOU LOST!', W/2, H/2 - 110);
         }
 
         ctx.fillStyle = '#fff';
         ctx.font = '24px Arial';
-        ctx.fillText('Skor: ' + playerScore + ' - ' + opponentScore, W/2, H/2 - 55);
+        ctx.fillText('Score: ' + playerScore + ' - ' + opponentScore, W/2, H/2 - 55);
 
         ctx.fillStyle = '#FFD700';
         ctx.font = 'bold 20px Arial';
-        ctx.fillText('🏆 En Yüksek: ' + highScore, W/2, H/2 - 15);
+        ctx.fillText('🏆 High Score: ' + highScore, W/2, H/2 - 15);
 
         ctx.fillStyle = '#aef';
         ctx.font = '18px Arial';
-        ctx.fillText(won ? 'Harika bir performans!' : 'Daha iyi yapabilirsin!', W/2, H/2 + 30);
+        ctx.fillText(won ? 'Amazing performance!' : 'You can do better!', W/2, H/2 + 30);
 
         const pulse = Math.sin(Date.now() * 0.005) * 0.3 + 0.7;
         ctx.fillStyle = 'rgba(243,156,18,' + pulse + ')';
         ctx.font = 'bold 26px Arial';
-        ctx.fillText('Tekrar oynamak için dokun!', W/2, H/2 + 110);
+        ctx.fillText('Tap to play again!', W/2, H/2 + 110);
     }
 
     function draw() {

@@ -2,8 +2,13 @@
   {
     "id": "1",
     "name": "Snake",
-    "thumbnailUrl": "https://www.tinygamerai.com/games/files/snake/thumbnail.png",
     "samplePrompt": "Make a Orb-based growth mechanics snake game. But the snake shouldn't die when hit; it should eat the other snake. I don't want it to get burned at all when it hits a wall. The snake could die if it hits a wall.",
     "link": "https://www.tinygamerai.com/games/files/snake/index.html"
+  },
+  {
+    "id": "2",
+    "name": "Head Ball",
+    "samplePrompt": "Make head ball game",
+    "link": "https://www.tinygamerai.com/games/files/snake/head-ball.html"
   }
 ]
