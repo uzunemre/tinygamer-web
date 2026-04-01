@@ -3,7 +3,7 @@
     "id": "1",
     "name": "Snake",
     "thumbnailUrl": "https://www.tinygamerai.com/games/files/snake/thumbnail.png",
-    "samplePrompt": "Create a classic snake game with glowing neon graphics where the snake grows larger as it eats various colored food. Include AI enemies.",
+    "samplePrompt": "Make a Orb-based growth mechanics snake game. But the snake shouldn't die when hit; it should eat the other snake. I don't want it to get burned at all when it hits a wall. The snake could die if it hits a wall.",
     "link": "https://www.tinygamerai.com/games/files/snake/index.html"
   }
 ]
