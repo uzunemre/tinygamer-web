@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <style>
+        body { margin:0; padding:0; overflow:hidden; width:100vw; height:100vh; touch-action:none; user-select:none; -webkit-user-select:none; background:#1a1a2e; }
+        canvas { display:block; }
+    </style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    // Audio
+    let audioCtx = null;
+    function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    function playSound(freq, type, duration) {
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.5, audioCtx.currentTime + duration);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // Game state
+    let gameState = 'MENU';
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('slitherHS') || '0');
+
+    // World size
+    const WORLD_W = 2000;
+    const WORLD_H = 2000;
+    const CELL = 20;
+
+    // Camera
+    let camX = 0, camY = 0;
+
+    // Player snake
+    let player = {
+        segments: [],
+        dir: { x: 1, y: 0 },
+        targetDir: { x: 1, y: 0 },
+        speed: 3,
+        growing: 0,
+        color: '#00ff88',
+        headColor: '#00ffaa',
+        size: 12,
+        score: 0
+    };
+
+    // AI snakes
+    let aiSnakes = [];
+    const AI_COUNT = 8;
+    const AI_COLORS = ['#ff4444','#ff8800','#ffff00','#ff44ff','#44ffff','#8844ff','#ff6688','#88ff44'];
+
+    // Food
+    let foods = [];
+    const FOOD_COUNT = 150;
+    const FOOD_COLORS = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b','#cc5de8','#f06595','#74c0fc'];
+
+    // Joystick
+    let joystick = {
+        active: false,
+        baseX: 0, baseY: 0,
+        stickX: 0, stickY: 0,
+        id: -1,
+        radius: 60
+    };
+
+    // Boost
+    let boosting = false;
+    let boostTouch = -1;
+
+    function initPlayer() {
+        player.segments = [];
+        const startX = WORLD_W / 2;
+        const startY = WORLD_H / 2;
+        for (let i = 0; i < 20; i++) {
+            player.segments.push({ x: startX - i * CELL, y: startY });
+        }
+        player.dir = { x: 1, y: 0 };
+        player.targetDir = { x: 1, y: 0 };
+        player.growing = 0;
+        player.score = 0;
+        score = 0;
+    }
+
+    function initAI() {
+        aiSnakes = [];
+        for (let i = 0; i < AI_COUNT; i++) {
+            createAISnake(i);
+        }
+    }
+
+    function createAISnake(i) {
+        const color = AI_COLORS[i % AI_COLORS.length];
+        const startX = Math.random() * (WORLD_W - 200) + 100;
+        const startY = Math.random() * (WORLD_H - 200) + 100;
+        const angle = Math.random() * Math.PI * 2;
+        const dx = Math.cos(angle);
+        const dy = Math.sin(angle);
+        const segs = [];
+        const len = 15 + Math.floor(Math.random() * 15);
+        for (let j = 0; j < len; j++) {
+            segs.push({ x: startX - dx * j * CELL, y: startY - dy * j * CELL });
+        }
+        aiSnakes[i] = {
+            segments: segs,
+            dir: { x: dx, y: dy },
+            speed: 2 + Math.random(),
+            growing: 0,
+            color: color,
+            size: 10,
+            turnTimer: 0,
+            turnInterval: 30 + Math.floor(Math.random() * 60),
+            targetAngle: angle,
+            alive: true,
+            deathTimer: 0,
+            foodDrop: []
+        };
+    }
+
+    function spawnFood(x, y, count) {
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.random() * 30;
+            foods.push({
+                x: (x || Math.random() * WORLD_W) + Math.cos(angle) * dist,
+                y: (y || Math.random() * WORLD_H) + Math.sin(angle) * dist,
+                color: FOOD_COLORS[Math.floor(Math.random() * FOOD_COLORS.length)],
+                size: 5 + Math.random() * 4,
+                pulse: Math.random() * Math.PI * 2
+            });
+        }
+    }
+
+    function initFoods() {
+        foods = [];
+        for (let i = 0; i < FOOD_COUNT; i++) {
+            spawnFood(0, 0, 1);
+        }
+    }
+
+    function startGame() {
+        initPlayer();
+        initAI();
+        initFoods();
+        score = 0;
+        gameState = 'PLAYING';
+    }
+
+    // Input
+    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+    let usingTouch = false;
+
+    document.addEventListener('mousemove', (e) => {
+        if (!usingTouch) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            updateDirFromMouse();
+        }
+    });
+
+    document.addEventListener('mousedown', (e) => {
+        initAudio();
+        if (gameState === 'MENU' || gameState === 'GAME_OVER') {
+            startGame();
+            return;
+        }
+        boosting = true;
+    });
+
+    document.addEventListener('mouseup', () => {
+        boosting = false;
+    });
+
+    document.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        initAudio();
+        if (gameState === 'MENU' || gameState === 'GAME_OVER') {
+            startGame();
+            return;
+        }
+        usingTouch = true;
+        for (let t of e.changedTouches) {
+            // Right side = boost
+            if (t.clientX > canvas.width * 0.6 && joystick.active) {
+                boosting = true;
+                boostTouch = t.identifier;
+            } else if (!joystick.active) {
+                joystick.active = true;
+                joystick.baseX = t.clientX;
+                joystick.baseY = t.clientY;
+                joystick.stickX = t.clientX;
+                joystick.stickY = t.clientY;
+                joystick.id = t.identifier;
+            }
+        }
+    }, { passive: false });
+
+    document.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        for (let t of e.changedTouches) {
+            if (t.identifier === joystick.id) {
+                joystick.stickX = t.clientX;
+                joystick.stickY = t.clientY;
+                const dx = joystick.stickX - joystick.baseX;
+                const dy = joystick.stickY - joystick.baseY;
+                const len = Math.sqrt(dx * dx + dy * dy);
+                if (len > 10) {
+                    player.targetDir = { x: dx / len, y: dy / len };
+                }
+            }
+        }
+    }, { passive: false });
+
+    document.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        for (let t of e.changedTouches) {
+            if (t.identifier === joystick.id) {
+                joystick.active = false;
+                joystick.id = -1;
+            }
+            if (t.identifier === boostTouch) {
+                boosting = false;
+                boostTouch = -1;
+            }
+        }
+    }, { passive: false });
+
+    function updateDirFromMouse() {
+        if (player.segments.length === 0) return;
+        const head = player.segments[0];
+        const screenX = head.x - camX;
+        const screenY = head.y - camY;
+        const dx = mouse.x - screenX;
+        const dy = mouse.y - screenY;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len > 5) {
+            player.targetDir = { x: dx / len, y: dy / len };
+        }
+    }
+
+    function smoothDir(current, target, factor) {
+        const nx = current.x + (target.x - current.x) * factor;
+        const ny = current.y + (target.y - current.y) * factor;
+        const len = Math.sqrt(nx * nx + ny * ny);
+        if (len < 0.001) return current;
+        return { x: nx / len, y: ny / len };
+    }
+
+    function updatePlayer() {
+        if (player.segments.length === 0) return;
+
+        if (!usingTouch) updateDirFromMouse();
+
+        const turnSpeed = boosting ? 0.18 : 0.12;
+        player.dir = smoothDir(player.dir, player.targetDir, turnSpeed);
+
+        const speed = boosting ? player.speed * 1.8 : player.speed;
+        const head = player.segments[0];
+        const newHead = {
+            x: head.x + player.dir.x * speed,
+            y: head.y + player.dir.y * speed
+        };
+
+        // Wall collision = death
+        if (newHead.x < 0 || newHead.x > WORLD_W || newHead.y < 0 || newHead.y > WORLD_H) {
+            gameOver();
+            return;
+        }
+
+        player.segments.unshift(newHead);
+
+        if (player.growing > 0) {
+            player.growing--;
+        } else {
+            player.segments.pop();
+        }
+
+        // Camera follow
+        camX = newHead.x - canvas.width / 2;
+        camY = newHead.y - canvas.height / 2;
+    }
+
+    function updateAI(ai, idx) {
+        if (!ai.alive) {
+            ai.deathTimer--;
+            if (ai.deathTimer <= 0) {
+                createAISnake(idx);
+            }
+            return;
+        }
+        if (ai.segments.length === 0) return;
+
+        const head = ai.segments[0];
+
+        // Avoid walls
+        const margin = 100;
+        let avoidX = 0, avoidY = 0;
+        if (head.x < margin) avoidX += 1;
+        if (head.x > WORLD_W - margin) avoidX -= 1;
+        if (head.y < margin) avoidY += 1;
+        if (head.y > WORLD_H - margin) avoidY -= 1;
+
+        ai.turnTimer++;
+        if (ai.turnTimer > ai.turnInterval || avoidX !== 0 || avoidY !== 0) {
+            ai.turnTimer = 0;
+            ai.turnInterval = 30 + Math.floor(Math.random() * 60);
+
+            if (avoidX !== 0 || avoidY !== 0) {
+                const len = Math.sqrt(avoidX * avoidX + avoidY * avoidY);
+                ai.targetAngle = Math.atan2(avoidY / len, avoidX / len);
+            } else {
+                // Seek nearest food
+                let bestDist = 999999;
+                let bestFood = null;
+                for (let f of foods) {
+                    const d = (f.x - head.x) ** 2 + (f.y - head.y) ** 2;
+                    if (d < bestDist) {
+                        bestDist = d;
+                        bestFood = f;
+                    }
+                }
+                if (bestFood && bestDist < 200 * 200) {
+                    ai.targetAngle = Math.atan2(bestFood.y - head.y, bestFood.x - head.x);
+                } else {
+                    ai.targetAngle += (Math.random() - 0.5) * 1.2;
+                }
+            }
+        }
+
+        const targetDx = Math.cos(ai.targetAngle);
+        const targetDy = Math.sin(ai.targetAngle);
+        ai.dir.x += (targetDx - ai.dir.x) * 0.1;
+        ai.dir.y += (targetDy - ai.dir.y) * 0.1;
+        const dLen = Math.sqrt(ai.dir.x ** 2 + ai.dir.y ** 2);
+        if (dLen > 0.001) {
+            ai.dir.x /= dLen;
+            ai.dir.y /= dLen;
+        }
+
+        const newHead = {
+            x: head.x + ai.dir.x * ai.speed,
+            y: head.y + ai.dir.y * ai.speed
+        };
+
+        // Wall = death
+        if (newHead.x < 0 || newHead.x > WORLD_W || newHead.y < 0 || newHead.y > WORLD_H) {
+            killAI(ai);
+            return;
+        }
+
+        ai.segments.unshift(newHead);
+        if (ai.growing > 0) {
+            ai.growing--;
+        } else {
+            ai.segments.pop();
+        }
+    }
+
+    function killAI(ai) {
+        ai.alive = false;
+        ai.deathTimer = 180;
+        // Drop food
+        for (let i = 0; i < ai.segments.length; i += 3) {
+            foods.push({
+                x: ai.segments[i].x,
+                y: ai.segments[i].y,
+                color: ai.color,
+                size: 7 + Math.random() * 4,
+                pulse: Math.random() * Math.PI * 2
+            });
+        }
+    }
+
+    function checkFoodCollision() {
+        if (player.segments.length === 0) return;
+        const head = player.segments[0];
+        const eatRadius = player.size + 8;
+
+        for (let i = foods.length - 1; i >= 0; i--) {
+            const f = foods[i];
+            const dx = f.x - head.x;
+            const dy = f.y - head.y;
+            if (dx * dx + dy * dy < eatRadius * eatRadius) {
+                foods.splice(i, 1);
+                player.growing += 3;
+                score++;
+                player.score = score;
+                playSound(440 + score * 2, 'sine', 0.1);
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('slitherHS', highScore);
+                }
+                // Replenish food
+                if (foods.length < FOOD_COUNT) {
+                    spawnFood(0, 0, 1);
+                }
+            }
+        }
+    }
+
+    function checkAIFoodCollision() {
+        for (let ai of aiSnakes) {
+            if (!ai.alive || ai.segments.length === 0) continue;
+            const head = ai.segments[0];
+            const eatRadius = ai.size + 8;
+            for (let i = foods.length - 1; i >= 0; i--) {
+                const f = foods[i];
+                const dx = f.x - head.x;
+                const dy = f.y - head.y;
+                if (dx * dx + dy * dy < eatRadius * eatRadius) {
+                    foods.splice(i, 1);
+                    ai.growing += 2;
+                    if (foods.length < FOOD_COUNT) spawnFood(0, 0, 1);
+                }
+            }
+        }
+    }
+
+    function checkPlayerAICollision() {
+        // Player eats AI: player head hits AI body
+        if (player.segments.length === 0) return;
+        const pHead = player.segments[0];
+
+        for (let ai of aiSnakes) {
+            if (!ai.alive) continue;
+            for (let j = 0; j < ai.segments.length; j++) {
+                const seg = ai.segments[j];
+                const dx = pHead.x - seg.x;
+                const dy = pHead.y - seg.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < player.size + ai.size) {
+                    // Player eats the AI!
+                    const gained = Math.floor(ai.segments.length / 2);
+                    score += gained;
+                    player.score = score;
+                    player.growing += ai.segments.length * 2;
+                    if (score > highScore) {
+                        highScore = score;
+                        localStorage.setItem('slitherHS', highScore);
+                    }
+                    playSound(880, 'square', 0.3);
+                    killAI(ai);
+                    return;
+                }
+            }
+        }
+    }
+
+    function checkAIAICollision() {
+        for (let i = 0; i < aiSnakes.length; i++) {
+            const ai = aiSnakes[i];
+            if (!ai.alive || ai.segments.length === 0) continue;
+            const aiHead = ai.segments[0];
+
+            for (let j = 0; j < aiSnakes.length; j++) {
+                if (i === j) continue;
+                const other = aiSnakes[j];
+                if (!other.alive) continue;
+                for (let k = 0; k < other.segments.length; k++) {
+                    const seg = other.segments[k];
+                    const dx = aiHead.x - seg.x;
+                    const dy = aiHead.y - seg.y;
+                    if (dx * dx + dy * dy < (ai.size + other.size) ** 2) {
+                        killAI(ai);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    function gameOver() {
+        gameState = 'GAME_OVER';
+        playSound(200, 'sawtooth', 0.5);
+    }
+
+    // Draw functions
+    function drawGrid() {
+        ctx.strokeStyle = '#1e2a4a';
+        ctx.lineWidth = 1;
+        const gridSize = 50;
+        const startX = Math.floor(camX / gridSize) * gridSize - camX;
+        const startY = Math.floor(camY / gridSize) * gridSize - camY;
+
+        for (let x = startX; x < canvas.width + gridSize; x += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+        }
+        for (let y = startY; y < canvas.height + gridSize; y += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+        }
+    }
+
+    function drawBorder() {
+        ctx.strokeStyle = '#ff4444';
+        ctx.lineWidth = 8;
+        const x = -camX;
+        const y = -camY;
+        ctx.strokeRect(x, y, WORLD_W, WORLD_H);
+
+        // Border warning glow
+        ctx.strokeStyle = 'rgba(255,68,68,0.3)';
+        ctx.lineWidth = 30;
+        ctx.strokeRect(x, y, WORLD_W, WORLD_H);
+    }
+
+    function drawFood() {
+        for (let f of foods) {
+            const sx = f.x - camX;
+            const sy = f.y - camY;
+            if (sx < -20 || sx > canvas.width + 20 || sy < -20 || sy > canvas.height + 20) continue;
+            f.pulse += 0.05;
+            const ps = f.size + Math.sin(f.pulse) * 1.5;
+            ctx.beginPath();
+            ctx.arc(sx, sy, ps, 0, Math.PI * 2);
+            ctx.fillStyle = f.color;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+    }
+
+    function drawSnake(segments, color, headColor, size, isPlayer) {
+        if (segments.length === 0) return;
+
+        for (let i = segments.length - 1; i >= 0; i--) {
+            const seg = segments[i];
+            const sx = seg.x - camX;
+            const sy = seg.y - camY;
+            if (sx < -30 || sx > canvas.width + 30 || sy < -30 || sy > canvas.height + 30) continue;
+
+            const t = i / segments.length;
+            const segSize = i === 0 ? size * 1.3 : size * (0.7 + (1 - t) * 0.3);
+
+            ctx.beginPath();
+            ctx.arc(sx, sy, segSize, 0, Math.PI * 2);
+
+            if (i === 0) {
+                ctx.fillStyle = headColor || color;
+            } else {
+                // Gradient from head to tail
+                const alpha = 0.5 + (1 - t) * 0.5;
+                ctx.fillStyle = color;
+                ctx.globalAlpha = alpha;
+            }
+            ctx.fill();
+            ctx.globalAlpha = 1;
+
+            // Draw eyes on head
+            if (i === 0) {
+                ctx.fillStyle = '#ffffff';
+                const eyeOffset = segSize * 0.4;
+                const perpX = -(segments[1] ? (segments[0].y - segments[1].y) : 0);
+                const perpY = segments[1] ? (segments[0].x - segments[1].x) : 1;
+                const pLen = Math.sqrt(perpX * perpX + perpY * perpY) || 1;
+                const px = perpX / pLen * eyeOffset;
+                const py = perpY / pLen * eyeOffset;
+
+                ctx.beginPath();
+                ctx.arc(sx + px, sy + py, segSize * 0.25, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(sx - px, sy - py, segSize * 0.25, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(sx + px * 1.1, sy + py * 1.1, segSize * 0.12, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(sx - px * 1.1, sy - py * 1.1, segSize * 0.12, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
+
+    function drawPlayerName() {
+        if (player.segments.length === 0) return;
+        const head = player.segments[0];
+        const sx = head.x - camX;
+        const sy = head.y - camY - player.size * 1.8 - 8;
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 13px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Sen', sx, sy);
+    }
+
+    function drawAIName(ai, idx) {
+        if (ai.segments.length === 0) return;
+        const head = ai.segments[0];
+        const sx = head.x - camX;
+        const sy = head.y - camY - ai.size * 1.8 - 8;
+        if (sx < -50 || sx > canvas.width + 50 || sy < -50 || sy > canvas.height + 50) return;
+        ctx.fillStyle = ai.color;
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Yılan ' + (idx + 1), sx, sy);
+    }
+
+    function drawJoystick() {
+        if (!joystick.active) return;
+        ctx.globalAlpha = 0.4;
+        ctx.beginPath();
+        ctx.arc(joystick.baseX, joystick.baseY, joystick.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.arc(joystick.stickX, joystick.stickY, joystick.radius * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = '#00ff88';
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+
+    function drawHUD() {
+        // Score
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.roundRect ? ctx.beginPath() : null;
+        ctx.fillRect(10, 10, 180, 65);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('Skor: ' + score, 20, 32);
+        ctx.fillStyle = '#ffd700';
+        ctx.fillText('En Yüksek: ' + highScore, 20, 55);
+
+        // Length
+        ctx.fillStyle = '#00ff88';
+        ctx.fillText('Uzunluk: ' + player.segments.length, 20, 78);
+
+        // Boost hint
+        if (usingTouch && !joystick.active) {
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.font = '13px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Sol: Joystick | Sağ: Hızlan', canvas.width / 2, canvas.height - 20);
+        }
+
+        // Wall warning
+        if (player.segments.length > 0) {
+            const head = player.segments[0];
+            const warnDist = 150;
+            if (head.x < warnDist || head.x > WORLD_W - warnDist || head.y < warnDist || head.y > WORLD_H - warnDist) {
+                ctx.fillStyle = 'rgba(255, 68, 68, 0.8)';
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('⚠️ DUVAR YAKIN! ⚠️', canvas.width / 2, canvas.height / 2 - 50);
+            }
+        }
+    }
+
+    function drawMiniMap() {
+        const mapSize = 120;
+        const mapX = canvas.width - mapSize - 10;
+        const mapY = 10;
+        const scaleX = mapSize / WORLD_W;
+        const scaleY = mapSize / WORLD_H;
+
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(mapX, mapY, mapSize, mapSize);
+        ctx.strokeStyle = '#ff4444';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(mapX, mapY, mapSize, mapSize);
+
+        // Draw foods as dots
+        for (let f of foods) {
+            ctx.fillStyle = f.color;
+            ctx.fillRect(mapX + f.x * scaleX - 1, mapY + f.y * scaleY - 1, 2, 2);
+        }
+
+        // Draw AI snakes
+        for (let ai of aiSnakes) {
+            if (!ai.alive || ai.segments.length === 0) continue;
+            ctx.fillStyle = ai.color;
+            ctx.fillRect(mapX + ai.segments[0].x * scaleX - 2, mapY + ai.segments[0].y * scaleY - 2, 4, 4);
+        }
+
+        // Draw player
+        if (player.segments.length > 0) {
+            ctx.fillStyle = '#00ff88';
+            ctx.fillRect(mapX + player.segments[0].x * scaleX - 3, mapY + player.segments[0].y * scaleY - 3, 6, 6);
+        }
+    }
+
+    function drawMenu() {
+        ctx.fillStyle = '#0f0f23';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Background circles
+        for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            ctx.arc(
+                (Math.sin(i * 1.3) * 0.5 + 0.5) * canvas.width,
+                (Math.cos(i * 0.7) * 0.5 + 0.5) * canvas.height,
+                10 + Math.sin(Date.now() / 1000 + i) * 5,
+                0, Math.PI * 2
+            );
+            ctx.fillStyle = FOOD_COLORS[i % FOOD_COLORS.length];
+            ctx.globalAlpha = 0.3;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        ctx.textAlign = 'center';
+
+        // Title
+        ctx.font = 'bold 56px Arial';
+        ctx.fillStyle = '#00ff88';
+        ctx.shadowColor = '#00ff88';
+        ctx.shadowBlur = 20;
+        ctx.fillText('🐍 SLITHER', canvas.width / 2, canvas.height / 2 - 80);
+        ctx.shadowBlur = 0;
+
+        ctx.font = 'bold 24px Arial';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('Yılanları Ye, Büyü!', canvas.width / 2, canvas.height / 2 - 30);
+
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#aaaaaa';
+        ctx.fillText('🏆 Diğer yılanlara çarpınca onları yersin!', canvas.width / 2, canvas.height / 2 + 10);
+        ctx.fillText('⚠️ Duvara çarpınca ölürsün!', canvas.width / 2, canvas.height / 2 + 38);
+
+        // Tap to start
+        const pulse = Math.sin(Date.now() / 400) * 0.3 + 0.85;
+        ctx.globalAlpha = pulse;
+        ctx.fillStyle = '#00ff88';
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('Başlamak için Dokun!', canvas.width / 2, canvas.height / 2 + 100);
+        ctx.globalAlpha = 1;
+
+        // High score
+        if (highScore > 0) {
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText('En Yüksek Skor: ' + highScore, canvas.width / 2, canvas.height / 2 + 145);
+        }
+    }
+
+    function drawGameOver() {
+        ctx.fillStyle = 'rgba(0,0,0,0.75)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.textAlign = 'center';
+
+        ctx.font = 'bold 52px Arial';
+        ctx.fillStyle = '#ff4444';
+        ctx.shadowColor = '#ff4444';
+        ctx.shadowBlur = 20;
+        ctx.fillText('💀 ÖLDÜN!', canvas.width / 2, canvas.height / 2 - 80);
+        ctx.shadowBlur = 0;
+
+        ctx.font = 'bold 28px Arial';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('Skor: ' + score, canvas.width / 2, canvas.height / 2 - 20);
+
+        ctx.font = 'bold 22px Arial';
+        ctx.fillStyle = '#ffd700';
+        ctx.fillText('En Yüksek: ' + highScore, canvas.width / 2, canvas.height / 2 + 20);
+
+        ctx.font = 'bold 20px Arial';
+        ctx.fillStyle = '#aaaaaa';
+        ctx.fillText('Uzunluk: ' + player.segments.length, canvas.width / 2, canvas.height / 2 + 55);
+
+        const pulse = Math.sin(Date.now() / 400) * 0.3 + 0.85;
+        ctx.globalAlpha = pulse;
+        ctx.fillStyle = '#00ff88';
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('Tekrar Oynamak için Dokun!', canvas.width / 2, canvas.height / 2 + 110);
+        ctx.globalAlpha = 1;
+    }
+
+    let frameCount = 0;
+    function gameLoop() {
+        requestAnimationFrame(gameLoop);
+        frameCount++;
+
+        ctx.fillStyle = '#0f1020';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (gameState === 'MENU') {
+            drawMenu();
+            return;
+        }
+
+        if (gameState === 'GAME_OVER') {
+            // Still draw world behind
+            drawGrid();
+            drawBorder();
+            drawFood();
+            for (let i = 0; i < aiSnakes.length; i++) {
+                const ai = aiSnakes[i];
+                if (ai.alive && ai.segments.length > 0) {
+                    drawSnake(ai.segments, ai.color, ai.color, ai.size, false);
+                }
+            }
+            if (player.segments.length > 0) {
+                drawSnake(player.segments, player.color, player.headColor, player.size, true);
+            }
+            drawGameOver();
+            return;
+        }
+
+        if (gameState === 'PLAYING') {
+            // Update
+            updatePlayer();
+            if (gameState !== 'PLAYING') return;
+
+            for (let i = 0; i < aiSnakes.length; i++) {
+                updateAI(aiSnakes[i], i);
+            }
+
+            checkFoodCollision();
+            checkAIFoodCollision();
+            checkPlayerAICollision();
+
+            // Check AI vs AI every 3 frames for performance
+            if (frameCount % 3 === 0) {
+                checkAIAICollision();
+            }
+
+            // Replenish foods
+            if (frameCount % 30 === 0 && foods.length < FOOD_COUNT) {
+                spawnFood(0, 0, 5);
+            }
+
+            // Draw world
+            drawGrid();
+            drawBorder();
+            drawFood();
+
+            // Draw AI snakes
+            for (let i = 0; i < aiSnakes.length; i++) {
+                const ai = aiSnakes[i];
+                if (ai.alive && ai.segments.length > 0) {
+                    drawSnake(ai.segments, ai.color, ai.color, ai.size, false);
+                    drawAIName(ai, i);
+                }
+            }
+
+            // Draw player
+            if (player.segments.length > 0) {
+                drawSnake(player.segments, player.color, player.headColor, player.size, true);
+                drawPlayerName();
+            }
+
+            drawJoystick();
+            drawHUD();
+            drawMiniMap();
+        }
+    }
+
+    // Start
+    gameLoop();
+</script>
+</body>
+</html>
