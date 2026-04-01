@@ -2,7 +2,7 @@
   {
     "id": "1",
     "name": "Snake",
-    "thumbnailUrl": "https://tinygamer.ai/images/thumbnails/snake.png",
+    "thumbnailUrl": "https://www.tinygamerai.com/games/files/snake/thumbnail.png",
     "samplePrompt": "Create a classic snake game with glowing neon graphics where the snake grows larger as it eats various colored food. Include AI enemies.",
     "link": "https://www.tinygamerai.com/games/files/snake/index.html"
   }
