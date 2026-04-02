@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - TinyGamer AI</title>
+    <meta name="description" content="Terms of Service for TinyGamer AI — the AI-powered game creation platform.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #09090E;
+            --bg-card: rgba(22, 33, 62, 0.6);
+            --text-main: #FFFFFF;
+            --text-muted: #8E9CBB;
+            --accent-pink: #FF6B9D;
+            --accent-purple: #BB86FC;
+            --accent-cyan: #03DAC6;
+            --accent-gold: #FFD700;
+            --border-glow: rgba(187, 134, 252, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.7;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(187, 134, 252, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(255, 107, 157, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: center;
+            background: rgba(9, 9, 14, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            transition: opacity 0.3s;
+        }
+
+        .logo:hover { opacity: 0.8; }
+
+        /* ── Layout ── */
+        main {
+            max-width: 820px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 50px;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        /* ── Header ── */
+        .header-title {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .last-updated {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* ── Table of Contents ── */
+        .toc {
+            background: rgba(187, 134, 252, 0.06);
+            border: 1px solid rgba(187, 134, 252, 0.15);
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 40px;
+        }
+
+        .toc-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent-purple);
+            margin-bottom: 14px;
+        }
+
+        .toc ol {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .toc li {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .toc a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: var(--accent-purple);
+        }
+
+        /* ── Sections ── */
+        h2 {
+            color: var(--accent-purple);
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-top: 44px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(187, 134, 252, 0.15);
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            color: var(--text-main);
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 22px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: 1rem;
+        }
+
+        p { margin-bottom: 16px; }
+
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 22px;
+        }
+
+        li { margin-bottom: 10px; }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        a {
+            color: var(--accent-pink);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        /* ── Callout boxes ── */
+        .callout {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-left: 3px solid;
+            font-size: 0.95rem;
+        }
+
+        .callout.info {
+            background: rgba(3, 218, 198, 0.06);
+            border-color: var(--accent-cyan);
+            color: var(--text-muted);
+        }
+
+        .callout.warning {
+            background: rgba(255, 107, 157, 0.07);
+            border-color: var(--accent-pink);
+            color: var(--text-muted);
+        }
+
+        .callout.ai {
+            background: rgba(255, 215, 0, 0.06);
+            border-color: var(--accent-gold);
+            color: var(--text-muted);
+        }
+
+        .callout strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ── Divider ── */
+        hr {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            margin: 40px 0;
+        }
+
+        /* ── Footer contact ── */
+        .contact-box {
+            text-align: center;
+            margin-top: 44px;
+            padding: 28px;
+            border-radius: 16px;
+            background: rgba(187, 134, 252, 0.06);
+            border: 1px solid rgba(187, 134, 252, 0.15);
+        }
+
+        .contact-box p {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .contact-box a {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 600px) {
+            .card { padding: 28px 18px; }
+            h1 { font-size: 1.9rem; }
+            h2 { font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">TinyGamer AI</a>
+    </nav>
+
+    <main>
+        <div class="card">
+
+            <!-- Header -->
+            <div class="header-title">
+                <h1>Terms of Service</h1>
+                <div class="last-updated">Last Updated: April 3, 2026</div>
+            </div>
+
+            <p>Please read these Terms of Service ("Terms") carefully before using the <strong>TinyGamer AI</strong> mobile application (the "App") operated by TinyGamer AI ("we," "us," or "our"). By accessing or using the App, you agree to be bound by these Terms.</p>
+
+            <div class="callout info">
+                <strong>Quick Summary</strong>
+                TinyGamer AI lets you create browser-playable games using AI by describing what you want in plain text. These Terms explain what's allowed, how credits work, your rights over generated content, and the limitations of our AI system.
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc">
+                <div class="toc-title">Contents</div>
+                <ol>
+                    <li><a href="#eligibility">Eligibility</a></li>
+                    <li><a href="#account">Account &amp; Authentication</a></li>
+                    <li><a href="#credits">Credits &amp; Purchases</a></li>
+                    <li><a href="#ai-content">AI-Generated Content</a></li>
+                    <li><a href="#ownership">Intellectual Property &amp; Ownership</a></li>
+                    <li><a href="#acceptable-use">Acceptable Use</a></li>
+                    <li><a href="#third-party">Third-Party Services</a></li>
+                    <li><a href="#disclaimer">Disclaimer of Warranties</a></li>
+                    <li><a href="#liability">Limitation of Liability</a></li>
+                    <li><a href="#termination">Termination</a></li>
+                    <li><a href="#changes">Changes to These Terms</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ol>
+            </div>
+
+            <!-- 1 -->
+            <h2 id="eligibility"><span class="section-num">1</span> Eligibility</h2>
+            <p>You must be at least <strong>13 years of age</strong> to use the App. By using the App, you represent and warrant that you meet this requirement. If you are under 18, you must have your parent or legal guardian's consent to use the App and make any purchases.</p>
+
+            <!-- 2 -->
+            <h2 id="account"><span class="section-num">2</span> Account &amp; Authentication</h2>
+            <p>The App uses <strong>Sign in with Apple</strong> for secure, anonymous authentication. We receive a unique device-based or Apple-issued identifier to create and manage your account. You agree to:</p>
+            <ul>
+                <li>Provide accurate information if prompted during onboarding.</li>
+                <li>Keep your authentication credentials secure and not share your account with others.</li>
+                <li>Notify us immediately at <a href="mailto:emre.uzun1@icloud.com">emre.uzun1@icloud.com</a> if you suspect unauthorized access to your account.</li>
+            </ul>
+            <p>We reserve the right to suspend or terminate accounts that violate these Terms.</p>
+
+            <!-- 3 -->
+            <h2 id="credits"><span class="section-num">3</span> Credits &amp; Purchases</h2>
+
+            <h3>3.1 What are Credits?</h3>
+            <p>Credits are the in-app currency used to generate games. They are a <strong>consumption unit</strong>, not a game count. The number of credits deducted per game generation depends on the length and complexity of your prompt:</p>
+            <ul>
+                <li><strong>1–100 characters:</strong> 1 Credit</li>
+                <li><strong>101–300 characters:</strong> 3 Credits</li>
+                <li><strong>301+ characters:</strong> 7 Credits</li>
+            </ul>
+
+            <h3>3.2 Purchasing Credits</h3>
+            <p>Credits are purchased through the Apple App Store using in-app purchase packages. All transactions are processed by Apple and are subject to Apple's payment terms. We do not collect or store your payment information directly.</p>
+
+            <h3>3.3 Non-Refundable Policy</h3>
+            <div class="callout warning">
+                <strong>Please Note</strong>
+                Credits are non-refundable and have no monetary value outside of the App. Credits consumed during a failed generation attempt will be refunded to your account automatically. Credits do not expire.
+            </div>
+
+            <h3>3.4 Restore Purchases</h3>
+            <p>If you reinstall the App or switch devices, you can restore previously purchased credits using the "Restore Purchases" feature in the App, provided you are signed in with the same Apple ID.</p>
+
+            <!-- 4 -->
+            <h2 id="ai-content"><span class="section-num">4</span> AI-Generated Content</h2>
+
+            <div class="callout ai">
+                <strong>AI Disclaimer</strong>
+                TinyGamer AI uses large language models (LLMs) to generate game code based on your text prompts. AI-generated content may contain errors, unexpected behavior, incomplete logic, or results that do not match your exact intent. We do not guarantee the accuracy, playability, or quality of any generated game.
+            </div>
+
+            <p>By using the game generation feature, you acknowledge that:</p>
+            <ul>
+                <li>Generated games are created automatically and have not been reviewed or approved by a human editor.</li>
+                <li>Game output quality can vary significantly depending on the length and clarity of your prompt.</li>
+                <li>We are not responsible for any errors, bugs, or unintended content in AI-generated games.</li>
+                <li>Failed generations (where the AI cannot produce a playable result) may result in credits not being charged, or a refund being applied automatically.</li>
+            </ul>
+
+            <!-- 5 -->
+            <h2 id="ownership"><span class="section-num">5</span> Intellectual Property &amp; Ownership</h2>
+
+            <h3>5.1 Your Content</h3>
+            <p>You retain ownership of the <strong>text prompts</strong> you write. However, by submitting a prompt, you grant TinyGamer AI a worldwide, royalty-free, non-exclusive license to use, store, and process that prompt for the sole purpose of generating your game and improving our service.</p>
+
+            <h3>5.2 Generated Games</h3>
+            <p>The HTML/JavaScript game files generated by the AI based on your prompts are provided for your personal, non-commercial use. You may play, share, or embed these games freely. However, games that appear in the public "Explore" section of the App may be displayed to other users and attributed to the App.</p>
+
+            <h3>5.3 Our Platform</h3>
+            <p>All other aspects of the App — including its design, branding, trademarks, logos, underlying infrastructure, and non-user-generated content — are the exclusive property of TinyGamer AI and are protected by applicable intellectual property laws.</p>
+
+            <!-- 6 -->
+            <h2 id="acceptable-use"><span class="section-num">6</span> Acceptable Use</h2>
+            <p>You agree not to use the App to:</p>
+            <ul>
+                <li>Generate content that is illegal, harmful, hateful, sexually explicit, or promotes violence.</li>
+                <li>Attempt to reverse-engineer, exploit, or misuse the AI generation system.</li>
+                <li>Use automated bots, scripts, or tools to generate games in bulk or abuse the credit system.</li>
+                <li>Impersonate any person or entity or misrepresent your affiliation with any person or entity.</li>
+                <li>Upload or transmit viruses or any other malicious code.</li>
+                <li>Circumvent, disable, or otherwise interfere with security-related features of the App.</li>
+            </ul>
+            <p>We reserve the right to remove any content and suspend any account that violates these guidelines without prior notice.</p>
+
+            <!-- 7 -->
+            <h2 id="third-party"><span class="section-num">7</span> Third-Party Services</h2>
+            <p>The App integrates the following third-party services, each governed by their own terms and privacy policies:</p>
+            <ul>
+                <li><strong>Apple:</strong> Authentication (Sign in with Apple) and payment processing (App Store).</li>
+                <li><strong>RevenueCat:</strong> In-app purchase management and subscription tracking.</li>
+                <li><strong>Google AI / Anthropic Claude / OpenAI:</strong> Large language model APIs used to generate game code from your prompts. Your prompts are sent to these APIs; no personal identifiers are included.</li>
+            </ul>
+            <p>We are not responsible for the practices or policies of these third-party providers.</p>
+
+            <!-- 8 -->
+            <h2 id="disclaimer"><span class="section-num">8</span> Disclaimer of Warranties</h2>
+            <p>THE APP IS PROVIDED ON AN <strong>"AS IS"</strong> AND <strong>"AS AVAILABLE"</strong> BASIS WITHOUT ANY WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, TINYGAMER AI DISCLAIMS ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:</p>
+            <ul>
+                <li>The continuous, uninterrupted, or error-free operation of the App.</li>
+                <li>The accuracy, reliability, or completeness of any AI-generated output.</li>
+                <li>That the App will meet your specific requirements or expectations.</li>
+            </ul>
+
+            <!-- 9 -->
+            <h2 id="liability"><span class="section-num">9</span> Limitation of Liability</h2>
+            <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, TINYGAMER AI AND ITS OPERATORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES — INCLUDING LOSS OF DATA, PROFITS, OR GOODWILL — ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF, OR INABILITY TO USE, THE APP, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
+            <p>In no event shall our total liability to you for all claims exceed the amount you paid to us in the twelve (12) months preceding the claim.</p>
+
+            <!-- 10 -->
+            <h2 id="termination"><span class="section-num">10</span> Termination</h2>
+            <p>You may stop using the App at any time. You may also delete your account through the "Delete Account" option in the App's settings. Upon account deletion:</p>
+            <ul>
+                <li>All your personal data and authentication identifiers will be permanently removed.</li>
+                <li>Any remaining unused credits will be forfeited and are non-refundable.</li>
+                <li>Games you created may be anonymized and retained to maintain the integrity of the public library.</li>
+            </ul>
+            <p>We reserve the right to suspend or terminate your access to the App at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties.</p>
+
+            <!-- 11 -->
+            <h2 id="changes"><span class="section-num">11</span> Changes to These Terms</h2>
+            <p>We may revise these Terms at any time. If we make material changes, we will update the "Last Updated" date at the top of this page. Continued use of the App after any changes constitutes your acceptance of the new Terms. We encourage you to review these Terms periodically.</p>
+
+            <!-- 12 -->
+            <h2 id="contact"><span class="section-num">12</span> Contact Us</h2>
+            <p>If you have any questions, concerns, or requests regarding these Terms, please reach out to us:</p>
+
+            <div class="contact-box">
+                <p>TinyGamer AI — Legal Inquiries</p>
+                <a href="mailto:emre.uzun1@icloud.com">emre.uzun1@icloud.com</a>
+            </div>
+
+            <hr>
+
+            <p style="text-align:center; font-size:0.85rem; margin-top: 24px;">
+                <a href="privacy-policy.html">Privacy Policy</a>
+                &nbsp;·&nbsp;
+                <a href="index.html">Back to Home</a>
+            </p>
+
+        </div>
+    </main>
+
+</body>
+</html>
