@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - TinyGamer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #09090E;
+            --bg-card: rgba(22, 33, 62, 0.6);
+            --text-main: #FFFFFF;
+            --text-muted: #8E9CBB;
+            --accent-pink: #FF6B9D;
+            --accent-purple: #BB86FC;
+            --accent-cyan: #03DAC6;
+            --border-glow: rgba(187, 134, 252, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.7;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(187, 134, 252, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(255, 107, 157, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: center;
+            background: rgba(9, 9, 14, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 50px;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .last-updated {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        h3 {
+            color: var(--accent-purple);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: 1.05rem;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        ul {
+            margin-bottom: 25px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        a {
+            color: var(--accent-pink);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 30px 20px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="../../index.html" class="logo">TinyGamer</a>
+    </nav>
+
+    <main>
+        <div class="card">
+            <div class="header-title">
+                <h1>Privacy Policy</h1>
+                <div class="last-updated">Last Updated: November 8, 2026</div>
+            </div>
+
+            <p>Welcome to TinyGamer ("we," "our," or "us"). This Privacy Policy explains what information the TinyGamer mobile application (the "App") handles, how it is used, and the choices you have.</p>
+
+            <p>In short: TinyGamer is an offline game collection. It has no accounts, no sign-in and no servers of our own that store your data. Your progress stays on your device.</p>
+
+            <h3>1. Information Stored on Your Device</h3>
+            <p>The App saves the following only on your device, using the device's local storage. We never receive it:</p>
+            <ul>
+                <li>Game progress: levels, scores, coins, daily rewards, streaks and quests.</li>
+                <li>Settings: your chosen language, sound options and whether you have seen the introduction screens.</li>
+                <li>Your Premium status, cached so the App can unlock games quickly.</li>
+            </ul>
+            <p>If you delete the App, this local data is deleted with it. If you enable daily reminders, they are scheduled as local notifications on your device and no server is involved.</p>
+
+            <h3>2. Information Collected by Third-Party Services</h3>
+            <p>We do not run a backend that collects your personal data. The App does, however, use the following third-party services, each of which processes data under its own privacy policy.</p>
+
+            <h4>A. Advertising (Google AdMob)</h4>
+            <ul>
+                <li>The free version of the App shows ads served by Google AdMob. AdMob may collect and use your device's advertising identifier (IDFA, only if you allow tracking), IP address, approximate location, device and app information and ad interaction data, in order to serve and measure ads and to prevent fraud.</li>
+                <li>On iOS, the App asks for your permission through Apple's App Tracking Transparency prompt before any tracking takes place. If you decline, ads are not personalized based on tracking.</li>
+                <li>Where required (for example in the European Economic Area and the United Kingdom), the App shows a consent form from Google's User Messaging Platform before requesting ads.</li>
+                <li>Premium removes all ads from the App. See <a href="https://policies.google.com/technologies/ads">how Google uses data in advertising</a>.</li>
+            </ul>
+
+            <h4>B. In-App Purchases (Apple and RevenueCat)</h4>
+            <ul>
+                <li>The optional one-time Premium purchase is processed by Apple through the App Store. We do not receive or store your payment card details.</li>
+                <li>We use <strong>RevenueCat</strong> to check which purchases you own and to restore them. RevenueCat receives an anonymous app user identifier and your App Store purchase receipt information. It does not receive your name or email address from us.</li>
+            </ul>
+
+            <h4>C. Fonts (Google Fonts)</h4>
+            <ul>
+                <li>The App may download its typefaces from Google Fonts. Google may see your IP address when this happens.</li>
+            </ul>
+
+            <h3>3. How We Use Information</h3>
+            <ul>
+                <li>To show ads in the free version and to measure their performance.</li>
+                <li>To verify and restore your Premium purchase on your devices.</li>
+                <li>To respond to support requests you send us.</li>
+            </ul>
+            <p>We do not sell your personal information and we do not build user profiles of our own.</p>
+
+            <h3>4. Previous Versions of the App</h3>
+            <p>Earlier versions of the App (1.2.x and before) let users sign in with Apple, create games with an AI feature, and buy credits. Those versions stored an anonymous account identifier, your prompts, the generated games and credit purchase records on our servers, and sent prompts to third-party AI providers. That feature and the related online service have been discontinued. The server-side account, prompt and game data is being deleted. We may keep purchase records for as long as needed to meet accounting and legal obligations and to honor purchases you made earlier. If you used an earlier version and want to ask about your data, contact us at the address below.</p>
+
+            <h3>5. Children's Privacy</h3>
+            <p>The App does not knowingly collect personal information from anyone, including children, and has no accounts. Ads shown in the App are served through Google AdMob. If you believe a child has provided personal information through the App, contact us and we will help.</p>
+
+            <h3>6. Data Security</h3>
+            <p>Your game data stays on your device. Communication with advertising and purchase services uses encrypted connections (TLS).</p>
+
+            <h3>7. Your Choices and Rights</h3>
+            <ul>
+                <li><strong>Tracking:</strong> You can change the tracking permission at any time in iOS Settings &gt; Privacy &amp; Security &gt; Tracking, and you can limit ad personalization in iOS Settings.</li>
+                <li><strong>Consent:</strong> Where a consent form is shown, you can change your choice later if the App offers that option, or by reinstalling the App.</li>
+                <li><strong>Deletion:</strong> Delete the App to remove all local data. Depending on where you live, you may also have rights to access, correct or delete personal data held about you by us or our providers. Contact us to exercise them.</li>
+            </ul>
+
+            <h3>8. Changes to This Privacy Policy</h3>
+            <p>We may update this Privacy Policy from time to time. We will update the "Last Updated" date at the top of this page when we do. We encourage you to review it periodically.</p>
+
+            <h3>9. Contact Us</h3>
+            <p>If you have questions about this Privacy Policy or your data, please contact us at:</p>
+            <p><a href="mailto:support@tinygamerai.com">support@tinygamerai.com</a></p>
+
+            <hr>
+            <p style="text-align:center; font-size:0.85rem; margin-top: 24px;">
+                <a href="terms-of-service.html">Terms of Service</a>
+                &nbsp;·&nbsp;
+                <a href="../../index.html">Back to Home</a>
+            </p>
+        </div>
+    </main>
+
+</body>
+</html>
